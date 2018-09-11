@@ -10,7 +10,7 @@ public final class BookContract {
     private BookContract(){}
 
     // constant for the content authority
-    public static final String CONTENT_AUTHORITY = "com.example.android.bookspart2";
+    public static final String CONTENT_AUTHORITY = "com.example.android.books";
 
     // Use the content_authority to create the base uri that will contact the content provider
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);

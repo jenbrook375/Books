@@ -4,7 +4,6 @@ package com.example.android.books;
 import android.content.ContentValues;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -15,8 +14,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-import com.example.android.books.data.BookContract.BookEntry;
 
+import com.example.android.books.data.BookContract.BookEntry;
 import com.example.android.books.data.BooksDbHelper;
 
 public class EditorActivity extends AppCompatActivity {
@@ -35,7 +34,7 @@ public class EditorActivity extends AppCompatActivity {
     private int mType = 0;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
 
@@ -51,35 +50,6 @@ public class EditorActivity extends AppCompatActivity {
         mSupplierPhoneEditText = (EditText) findViewById(R.id.edit_supplier_phone);
 
         setupSpinner();
-    }
-
-    // Get user input from edit text fields and spinner, then insert that data into the table
-    private void insertBook()
-
-    {
-        String titleString = mTitleEditText.getText().toString().trim();
-        String priceString = mPriceEditText.getText().toString().trim();
-        double price = Double.parseDouble(priceString);
-        String quantityString = mQuantityEditText.getText().toString().trim();
-        int quantity = Integer.parseInt(quantityString);
-        String supplierNameString = mSupplierNameEditText.getText().toString().trim();
-        String supplierPhoneString = mSupplierPhoneEditText.getText().toString().trim();
-
-        // Create key value pairs that will be inserted into table
-        ContentValues values = new ContentValues();
-        values.put(BookEntry.COLUMN_PRODUCT_NAME, titleString);
-        values.put(BookEntry.COLUMN_PRODUCT_TYPE, mType);
-        values.put(BookEntry.COLUMN_PRICE, price);
-        values.put(BookEntry.COLUMN_QUANTITY, quantity);
-        values.put(BookEntry.COLUMN_SUPPLIER_NAME, supplierNameString);
-        values.put(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER, supplierPhoneString);
-
-        Uri newUri = getContentResolver().insert(BookEntry.CONTENT_URI, values);
-
-        if (newUri == null) {
-            Toast.makeText(this, R.string.error, Toast.LENGTH_LONG).show();
-        } else
-            Toast.makeText(this, R.string.saved , Toast.LENGTH_LONG).show();
     }
 
     // Drop-down menu that allows selection of book type
@@ -143,6 +113,35 @@ public class EditorActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // Get user input from edit text fields and spinner, then insert that data into the table
+    private void insertBook()
+
+    {
+        String titleString = mTitleEditText.getText().toString().trim();
+        String priceString = mPriceEditText.getText().toString().trim();
+        double price = Double.parseDouble(priceString);
+        String quantityString = mQuantityEditText.getText().toString().trim();
+        int quantity = Integer.parseInt(quantityString);
+        String supplierNameString = mSupplierNameEditText.getText().toString().trim();
+        String supplierPhoneString = mSupplierPhoneEditText.getText().toString().trim();
+
+        // Create key value pairs that will be inserted into table
+        ContentValues values = new ContentValues();
+        values.put(BookEntry.COLUMN_PRODUCT_NAME, titleString);
+        values.put(BookEntry.COLUMN_PRODUCT_TYPE, mType);
+        values.put(BookEntry.COLUMN_PRICE, price);
+        values.put(BookEntry.COLUMN_QUANTITY, quantity);
+        values.put(BookEntry.COLUMN_SUPPLIER_NAME, supplierNameString);
+        values.put(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER, supplierPhoneString);
+
+        Uri newUri = getContentResolver().insert(BookEntry.CONTENT_URI, values);
+
+        if (newUri == null) {
+            Toast.makeText(this, R.string.error, Toast.LENGTH_LONG).show();
+        } else
+            Toast.makeText(this, R.string.saved, Toast.LENGTH_LONG).show();
     }
 }
 

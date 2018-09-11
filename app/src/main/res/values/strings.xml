@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BooksPart2</string>
+    <string name="app_name">Books</string>
     <string name="hardback">Hardback</string>
     <string name="paperback">Paperback</string>
     <string name="ebook">Ebook</string>

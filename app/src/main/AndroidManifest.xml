@@ -22,7 +22,7 @@
 
         <provider
             android:name=".data.BooksProvider"
-            android:authorities="com.example.android.bookspart2"
+            android:authorities="com.example.android.books"
             android:exported="false" />
 
     </application>

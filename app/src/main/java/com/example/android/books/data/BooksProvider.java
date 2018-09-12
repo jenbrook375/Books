@@ -95,7 +95,20 @@ public class BooksProvider extends ContentProvider {
      */
     private Uri insertBook(Uri uri, ContentValues values) {
 
+        // Check that the title is not null
+        String title = values.getAsString(BookEntry.COLUMN_PRODUCT_NAME);
+        if (title == null) {
+            throw new IllegalArgumentException("Title is a required field");
+        }
+
+        // Check that the supplier name is not null
+        String supplier = values.getAsString(BookEntry.COLUMN_SUPPLIER_NAME);
+        if (supplier == null) {
+            throw new IllegalArgumentException("Supplier name is a required field");
+        }
+
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
 
         // Insert the new book with the given values
         long id = database.insert(BookEntry.TABLE_NAME, null, values);
@@ -115,7 +128,44 @@ public class BooksProvider extends ContentProvider {
      */
     @Override
     public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
-        return 0;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            // if the sUriMatcher finds BOOKS value
+            case BOOKS:
+                return updateBooks(uri, contentValues, selection, selectionArgs);
+            // if the sUriMatcher finds BOOKS_ID, then extract the line ID so it can be appended to the uri
+            case BOOKS_ID:
+                selection = BookEntry._ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                return updateBooks(uri, contentValues, selection, selectionArgs);
+            // if neither BOOKS nor BOOKS_ID value is matched, then throw exception
+            default:
+                throw new IllegalArgumentException("Update is not supported for " + uri);
+        }
+    }
+
+    private int updateBooks(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+
+        if (values.containsKey(BookEntry.COLUMN_PRODUCT_NAME)) {
+            String title = values.getAsString(BookEntry.COLUMN_PRODUCT_NAME);
+            if (title == null) {
+                throw new IllegalArgumentException("Title is a required field");
+            }
+        }
+        if (values.containsKey(BookEntry.COLUMN_SUPPLIER_NAME)) {
+            String supplier = values.getAsString(BookEntry.COLUMN_SUPPLIER_NAME);
+            if (supplier == null) {
+                throw new IllegalArgumentException("Supplier Name is a required field");
+            }
+        }
+        if (values.size() == 0) {
+            return 0;
+        }
+        // get a writable database
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+        // return the uri with value pairs, selection and selection args
+        return database.update(BookEntry.TABLE_NAME, values, selection, selectionArgs);
     }
 
     /**

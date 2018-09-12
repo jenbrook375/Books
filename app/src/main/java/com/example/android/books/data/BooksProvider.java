@@ -173,7 +173,25 @@ public class BooksProvider extends ContentProvider {
      */
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        // Get writable database
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+        // use the sUriMatcher to check for the correct path
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case BOOKS:
+                // if the sUriMatcher finds BOOKS, then delete all rows that match the selection and selectionArgs
+                return database.delete(BookEntry.TABLE_NAME, selection, selectionArgs);
+            case BOOKS_ID:
+                // if the sUriMatcher finds BOOKS_ID, then delete only the row specified by the _id
+                selection = BookEntry._ID + "=?";
+                // find and extract the row id #, then add it to the uri
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                return database.delete(BookEntry.TABLE_NAME, selection, selectionArgs);
+            // if neither BOOKS nor BOOKS_ID are found, then an error occurs
+            default:
+                throw new IllegalArgumentException("Deletion is not supported for " + uri);
+        }
     }
 
     /**
@@ -181,7 +199,15 @@ public class BooksProvider extends ContentProvider {
      */
     @Override
     public String getType(Uri uri) {
-        return null;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case BOOKS:
+                return BookEntry.CONTENT_LIST_TYPE;
+            case BOOKS_ID:
+                return BookEntry.CONTENT_ITEM_TYPE;
+            default:
+                throw new IllegalStateException("Unknown URI " + uri + " with match " + match);
+        }
     }
 }
 

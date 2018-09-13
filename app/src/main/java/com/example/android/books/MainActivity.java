@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.android.books.data.BookContract.BookEntry;
@@ -62,62 +63,12 @@ public class MainActivity extends AppCompatActivity {
                 null,
                 null);
 
-        // The cursor takes the projection and any selection/selection arguments and performs the query
-        /*Cursor cursor = db.query(BookEntry.TABLE_NAME, projection,
-                null,
-                null,
-                null,
-                null,
-                null);*/
+        // find the listView in activity_main.xml
+        ListView bookListView = (ListView) findViewById(R.id.list);
 
-        // Finds the textView in activity_main.xml where the query results will be displayed
-        TextView displayView = (TextView) findViewById(R.id.text_view_books);
+        // set up the adapter
+        BooksCursorAdapter adapter = new BooksCursorAdapter(this, cursor);
 
-        try {
-            // Create the header for the query result table (all columns will be displayed)
-            displayView.setText(getString(R.string.rows_number) + cursor.getCount() + "\n\n");
-            displayView.append(BookEntry._ID + " - " +
-                    BookEntry.COLUMN_PRODUCT_NAME + " - " +
-                    BookEntry.COLUMN_PRODUCT_TYPE + " - " +
-                    BookEntry.COLUMN_PRICE + " - " +
-                    BookEntry.COLUMN_QUANTITY + " - " +
-                    BookEntry.COLUMN_SUPPLIER_NAME + " - " +
-                    BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER + "\n");
-
-            // Find the index of each column
-            int idColumnIndex = cursor.getColumnIndex(BookEntry._ID);
-            int nameColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_PRODUCT_NAME);
-            int typeColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_PRODUCT_TYPE);
-            int priceColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_PRICE);
-            int quantityColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_QUANTITY);
-            int supplierColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_SUPPLIER_NAME);
-            int phoneColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
-
-            // Move through each row until all rows are exhausted, then exit the loop
-            while (cursor.moveToNext()) {
-
-                int currentId = cursor.getInt(idColumnIndex);
-                String currentName = cursor.getString(nameColumnIndex);
-                int currentType = cursor.getInt(typeColumnIndex);
-                double currentPrice = cursor.getDouble(priceColumnIndex);
-                int currentQuantity = cursor.getInt(quantityColumnIndex);
-                String currentSupplier = cursor.getString(supplierColumnIndex);
-                String currentPhone = cursor.getString(phoneColumnIndex);
-
-                // Display the rows from the table in the textView
-                displayView.append(("\n" + currentId + " - " +
-                        currentName + " - " +
-                        currentType + " - " +
-                        currentPrice + " - " +
-                        currentQuantity + " - " +
-                        currentSupplier + " - " +
-                        currentPhone));
-            }
-
-        } finally {
-            // Closes the cursor to release resources and invalidate
-            cursor.close();
-        }
     }
 }
 

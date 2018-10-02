@@ -45,13 +45,13 @@ public final class BookContract {
         public static final int PAPERBACK = 1;
         public static final int EBOOK = 2;
 
-        // The MIME type of the {@link #CONTENT_URI} for a list of pets.
+        // The MIME type of the {@link #CONTENT_URI} for a list of books.
 
         public static final String CONTENT_LIST_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_BOOKS;
 
         /**
-         * The MIME type of the {@link #CONTENT_URI} for a single pet.
+         * The MIME type of the {@link #CONTENT_URI} for a single book.
          */
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_BOOKS;

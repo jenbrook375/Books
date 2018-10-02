@@ -1,17 +1,49 @@
 <resources>
     <string name="app_name">Books</string>
+
+    <!-- spinner choices EditorActivity.java -->
     <string name="hardback">Hardback</string>
     <string name="paperback">Paperback</string>
     <string name="ebook">Ebook</string>
-    <string name="exit">EXIT</string>
-    <string name="save">Save</string>
+
+    <!-- Edit text fields activity_editor.xml -->
     <string name="title">Title</string>
     <string name="type">Type</string>
     <string name="price">Price</string>
     <string name="quantity">Quantity</string>
     <string name="supplier_name">Supplier Name</string>
     <string name="supplier_phone_number">Supplier Phone Number</string>
+
     <string name="rows_number">Number of rows in table Books:</string>
+
+    <!-- toast messages saving book EditorActivity.java -->
     <string name="error">Error with saving book</string>
     <string name="saved">Book saved</string>
+
+    <!-- page titles in app bar new book mode and edit book mode EditorActivity.java -->
+    <string name="editor_add_book_label">Add Book</string>
+    <string name="editor_edit_book_label">Edit Book</string>
+
+    <!-- dialog box message and buttons new book mode EditorActivity.java -->
+    <string name="leave_wout_changing">Discard changes and return to previous screen?</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep Editing</string>
+
+    <!-- Menu choices in book editing mode EditorActivity.java -->
+    <string name="save">SAVE</string>
+    <string name="don_t_save">DON\'T SAVE</string>
+    <string name="delete_entry">DELETE ENTRY</string>
+
+    <!-- textViews that show prompts before database is created activity_main.xml -->
+    <string name="click_to_add_books">Click to add books</string>
+    <string name="your_bookshelf_is_empty">Your bookshelf is empty</string>
+
+    <!-- toast messages updating book EditorActivity.java -->
+    <string name="problem_updating">Problem with updating book</string>
+    <string name="book_updated">Book updated</string>
+    <string name="confirm_delete">Delete Entry?</string>
+    <string name="delete">Delete</string>
+    <string name="problem_deleting">Problem with deleting entry</string>
+    <string name="book_deleted">Book Deleted</string>
+
 </resources>

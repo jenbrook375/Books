@@ -1,20 +1,25 @@
 package com.example.android.books;
 
+import android.app.LoaderManager;
+import android.content.ContentUris;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.example.android.books.data.BookContract.BookEntry;
-import com.example.android.books.data.BooksDbHelper;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private BooksDbHelper mDbHelper;
+    private static final int URI_LOADER = 0;
+    BooksCursorAdapter mCursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,44 +35,63 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        mDbHelper = new BooksDbHelper(this);
-        displayDatabaseInfo();
+
+        ListView bookListView = (ListView) findViewById(R.id.list);
+
+        // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
+        View emptyView = findViewById(R.id.empty_view);
+        bookListView.setEmptyView(emptyView);
+
+        mCursorAdapter = new BooksCursorAdapter(this, null);
+        bookListView.setAdapter(mCursorAdapter);
+
+        // set up an onClickListener to open intent when list item is clicked
+        bookListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            // opens up EditorActivity
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MainActivity.this, EditorActivity.class);
+
+                // pass the contentUri plus the id # of the list item selected
+                Uri currentBookUri = ContentUris.withAppendedId(BookEntry.CONTENT_URI, id);
+
+                // pass the correct uri to the intent
+                intent.setData(currentBookUri);
+
+                // open the activity
+                startActivity(intent);
+            }
+        });
+
+        // kick off the loader
+        getLoaderManager().initLoader(URI_LOADER, null, this);
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        displayDatabaseInfo();
-    }
-
-    /**
-     * Temporary helper method to display information in the onscreen TextView about the state of
-     * the pets database.
-     */
-    private void displayDatabaseInfo() {
-
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // The projection defines the columns that will be queried
         String[] projection = {BookEntry._ID,
                 BookEntry.COLUMN_PRODUCT_NAME,
                 BookEntry.COLUMN_PRODUCT_TYPE,
-                BookEntry.COLUMN_PRICE,
-                BookEntry.COLUMN_QUANTITY,
-                BookEntry.COLUMN_SUPPLIER_NAME,
-                BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER};
-
-        // perform a query with BooksProvider using the CONTENT_URI
-        Cursor cursor = getContentResolver().query(
-                BookEntry.CONTENT_URI, // the CONTENT_URI for the books table
-                projection,           // the defined columns to return
+                BookEntry.COLUMN_PRICE};
+        return new CursorLoader(this,
+                BookEntry.CONTENT_URI,
+                projection,
                 null,
                 null,
                 null);
+    }
 
-        // find the listView in activity_main.xml
-        ListView bookListView = (ListView) findViewById(R.id.list);
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
-        // set up the adapter
-        BooksCursorAdapter adapter = new BooksCursorAdapter(this, cursor);
+
+        mCursorAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mCursorAdapter.swapCursor(null);
 
     }
 }

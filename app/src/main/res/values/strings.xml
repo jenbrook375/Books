@@ -45,5 +45,6 @@
     <string name="delete">Delete</string>
     <string name="problem_deleting">Problem with deleting entry</string>
     <string name="book_deleted">Book Deleted</string>
+    <string name="exit_without_saving">EXIT WITHOUT SAVING</string>
 
 </resources>

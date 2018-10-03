@@ -180,6 +180,7 @@ public class EditorActivity extends AppCompatActivity implements
             case R.id.delete_entry:
                 // run dialog to confirm deletion
                 showDeleteConfirmationDialog();
+                Log.i(TAG, "delete entry");
                 return true;
             case android.R.id.home:
 
@@ -313,7 +314,7 @@ public class EditorActivity extends AppCompatActivity implements
                     break;
             }
         }
-        Log.v(TAG, "onFinishedLoading current uri" + mCurrentBookUri);
+        Log.i(TAG, "onFinishedLoading current uri" + mCurrentBookUri);
     }
 
     @Override
@@ -349,29 +350,31 @@ public class EditorActivity extends AppCompatActivity implements
         alertDialog.show();
     }
 
-    private void showDeleteConfirmationDialog(
-    ) {
-        // Set AlertDialog.Builder, message and listener to confirm user choice before deleting
+    private void showDeleteConfirmationDialog() {
+        // Create an AlertDialog.Builder and set the message, and click listeners
+        // for the postivie and negative buttons on the dialog.
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.confirm_delete);
         builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // if the user clicks on Delete Entry, then delete book from database
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Delete" button, so delete the pet.
                 deleteBook();
             }
         });
         builder.setNegativeButton(R.string.keep_editing, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // user wants to keep editing so dismiss dialog
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Cancel" button, so dismiss the dialog
+                // and continue editing the pet.
                 if (dialog != null) {
                     dialog.dismiss();
                 }
             }
         });
-    }
 
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
     public void deleteBook() {
         if (mCurrentBookUri != null) {
             int rowsDeleted = getContentResolver().delete(mCurrentBookUri, null, null);

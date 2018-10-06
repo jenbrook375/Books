@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- These are the options displayed in the gender drop-down Spinner -->
+    <!-- These are the options displayed in the book drop-down Spinner -->
     <string-array name="array_book_types">
         <item>Hardback</item>
         <item>Paperback</item>
         <item>Ebook</item>
+    </string-array>
+    <string-array name="array_quantity">
+        <item>+</item>
+        <item>-</item>
     </string-array>
 </resources>

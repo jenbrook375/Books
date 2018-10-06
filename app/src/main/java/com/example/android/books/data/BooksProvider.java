@@ -13,12 +13,13 @@ import android.util.Log;
 import com.example.android.books.data.BookContract.BookEntry;
 
 public class BooksProvider extends ContentProvider {
-    /**
-     * Tag for the log messages
-     */
+
+    //Tag for the log messages
     public static final String LOG_TAG = BooksProvider.class.getSimpleName();
+
     private static final int BOOKS = 1;
     private static final int BOOKS_ID = 2;
+
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
@@ -62,7 +63,7 @@ public class BooksProvider extends ContentProvider {
             // if the sUriMatcher matches the BOOKS_ID path, then extract a row id
             // and query only that row
             case BOOKS_ID:
-                selection = BookEntry._ID + "/=?";
+                selection = BookEntry._ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 cursor = database.query(BookEntry.TABLE_NAME, projection,
                         selection, selectionArgs, null, null, null);
@@ -103,10 +104,30 @@ public class BooksProvider extends ContentProvider {
             throw new IllegalArgumentException("Title is a required field");
         }
 
+        // Check that the type is not null
+        String type = values.getAsString(BookEntry.COLUMN_PRODUCT_TYPE);
+        if (type == null) {
+            throw new IllegalArgumentException("Type is a required field");
+        }
+        // Check that the price is not null
+        String price = values.getAsString(BookEntry.COLUMN_PRICE);
+        if (price == null) {
+            throw new IllegalArgumentException("Price is a required field");
+        }
+        // Check that the quantity is not null
+        String quantity = values.getAsString(BookEntry.COLUMN_QUANTITY);
+        if (quantity == null) {
+            throw new IllegalArgumentException("Quantity is a required field");
+        }
         // Check that the supplier name is not null
         String supplier = values.getAsString(BookEntry.COLUMN_SUPPLIER_NAME);
         if (supplier == null) {
             throw new IllegalArgumentException("Supplier name is a required field");
+        }
+        // Check that the supplier phone is not null
+        String phone = values.getAsString(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
+        if (phone == null) {
+            throw new IllegalArgumentException("Supplier phone number is a required field");
         }
 
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
@@ -151,16 +172,39 @@ public class BooksProvider extends ContentProvider {
 
     private int updateBooks(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 
+        // make sure that no empty fields are saved to the database
         if (values.containsKey(BookEntry.COLUMN_PRODUCT_NAME)) {
             String title = values.getAsString(BookEntry.COLUMN_PRODUCT_NAME);
             if (title == null) {
                 throw new IllegalArgumentException("Title is a required field");
             }
         }
+
+        if (values.containsKey(BookEntry.COLUMN_PRICE)) {
+            String title = values.getAsString(BookEntry.COLUMN_PRICE);
+            if (title == null) {
+                throw new IllegalArgumentException("Price is a required field");
+            }
+        }
+
+        if (values.containsKey(BookEntry.COLUMN_QUANTITY)) {
+            String title = values.getAsString(BookEntry.COLUMN_QUANTITY);
+            if (title == null) {
+                throw new IllegalArgumentException("Quantity is a required field");
+            }
+        }
+
         if (values.containsKey(BookEntry.COLUMN_SUPPLIER_NAME)) {
             String supplier = values.getAsString(BookEntry.COLUMN_SUPPLIER_NAME);
             if (supplier == null) {
                 throw new IllegalArgumentException("Supplier Name is a required field");
+            }
+        }
+
+        if (values.containsKey(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER)) {
+            String title = values.getAsString(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
+            if (title == null) {
+                throw new IllegalArgumentException("Supplier phone number is a required field");
             }
         }
         if (values.size() == 0) {

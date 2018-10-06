@@ -31,7 +31,7 @@
 
     <!-- Menu choices in book editing mode EditorActivity.java -->
     <string name="save">SAVE</string>
-    <string name="don_t_save">DON\'T SAVE</string>
+    <string name="exit_without_saving">EXIT WITHOUT SAVING</string>
     <string name="delete_entry">DELETE ENTRY</string>
 
     <!-- textViews that show prompts before database is created activity_main.xml -->
@@ -41,10 +41,27 @@
     <!-- toast messages updating book EditorActivity.java -->
     <string name="problem_updating">Problem with updating book</string>
     <string name="book_updated">Book updated</string>
+
+    <!-- confirm delete dialog -->
     <string name="confirm_delete">Delete Entry?</string>
     <string name="delete">Delete</string>
     <string name="problem_deleting">Problem with deleting entry</string>
     <string name="book_deleted">Book Deleted</string>
-    <string name="exit_without_saving">EXIT WITHOUT SAVING</string>
+
+    <!-- instruction textView EditorActivity.java -->
+    <string name="add_edit_books_here_n_all_fields_are_required">Add/Edit books here. \n
+        All fields are required</string>
+
+    <!-- increment and decrement button text -->
+    <string name="increase_quantity">+</string>
+    <string name="decrease_quantity">-</string>
+
+    <!-- confirm/reject sale message -->
+    <string name="confirm_sale">Book sold</string>
+    <string name="no_sale">Sorry, book is out of stock at this time</string>
+    <string name="all_fields_required">All fields are required to save a book</string>
+    <string name="order">Order</string>
+    <string name="decrement">-</string>
+    <string name="increment">+</string>
 
 </resources>

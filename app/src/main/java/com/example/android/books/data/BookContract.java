@@ -41,7 +41,8 @@ public final class BookContract {
         public static final String COLUMN_SUPPLIER_PHONE_NUMBER = "phone";
 
         // constants for product type
-        public static final int HARDBACK = 0;
+        public static final int
+                HARDBACK = 0;
         public static final int PAPERBACK = 1;
         public static final int EBOOK = 2;
 

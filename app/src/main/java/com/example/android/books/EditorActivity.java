@@ -21,21 +21,21 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.android.books.data.BookContract.BookEntry;
-import com.example.android.books.data.BooksDbHelper;
 
 
 public class EditorActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
-    private BooksDbHelper mDbHelper;
-
-    // identifier for the book data laoder
+    // identifier for the book data loader
     private static final int EXISTING_BOOK_LOADER = 0;
+
+    // set default price to $0.00
     private static final double DEFAULT_PRICE = 0.00;
 
     // EditText fields and spinner for book info
@@ -48,10 +48,15 @@ public class EditorActivity extends AppCompatActivity implements
 
     // set default book type to 0/hardback (other possibilities are 1=paperback, 2=ebook)
     private int mType = 0;
-    private static final int DEFAULT_QUANTITY = 0;
+
+    // set default quantity to 1
+    private static final int DEFAULT_QUANTITY = 1;
+
     private static final String TAG = "EditorActivity";
+
     // content uri for existing book
     private Uri mCurrentBookUri;
+
     // keep track of whether book entry has changed (true) or not (false)
     private boolean mBookHasChanged = false;
 
@@ -70,18 +75,44 @@ public class EditorActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
 
+        // find increment and decrement buttons in activity_editor.xml
+        final Button incrButton = (Button) findViewById(R.id.increment_button);
+        final Button decrButton = (Button) findViewById(R.id.decrement_button);
+
         // get intent data from MainActivity
         Intent intent = getIntent();
         mCurrentBookUri = intent.getData();
+        Log.i(TAG, "existing book uri" + mCurrentBookUri);
 
-        // see if there is an uri passed in from MainActivity
-        // if there isn't then make title Add a  new Book
+        // if there is not an uri, then make title Add an new book
         if (mCurrentBookUri == null) {
             setTitle(getString(R.string.editor_add_book_label));
-            // if there is an uri, then make title Edit an existing book
             invalidateOptionsMenu();
+            // hide order button when this is the add book screen
+            findViewById(R.id.order_button).setVisibility(View.INVISIBLE);
+            findViewById(R.id.increment_button).setVisibility(View.INVISIBLE);
+            findViewById(R.id.decrement_button).setVisibility(View.INVISIBLE);
+
+            // see if there is an uri passed in from MainActivity
+            // if there isn't then make title Edit an existing Book
         } else {
             setTitle(getString(R.string.editor_edit_book_label));
+            Button orderButton = (Button) findViewById(R.id.order_button);
+            // show order button w/ intent that opens phone dialer and passes in
+            // the supplier phone #
+            orderButton.setVisibility(View.VISIBLE);
+            orderButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EditText supplierPhoneNumber = (EditText) findViewById(R.id.edit_supplier_phone);
+                    String phoneNumber = supplierPhoneNumber.getText().toString();
+                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse
+                            ("tel:" + phoneNumber));
+                    if (intent.resolveActivity(getPackageManager()) != null) {
+                        startActivity(intent);
+                    }
+                }
+            });
 
             // Initialize a loader to read the BOOK data from the database
             // and display the current values in the editor
@@ -89,10 +120,10 @@ public class EditorActivity extends AppCompatActivity implements
         }
 
         // Find all relevant views that we will need to read user input from
-        mTitleEditText = (EditText) findViewById(R.id.title);
+        mTitleEditText = (EditText) findViewById(R.id.edit_title);
         mTypeSpinner = (Spinner) findViewById(R.id.spinner_type);
         mPriceEditText = (EditText) findViewById(R.id.edit_price);
-        mQuantityEditText = (EditText) findViewById(R.id.edit_quantity);
+        mQuantityEditText = (EditText) findViewById(R.id.quantity_text_view);
         mSupplierNameEditText = (EditText) findViewById(R.id.edit_supplier_name);
         mSupplierPhoneEditText = (EditText) findViewById(R.id.edit_supplier_phone);
 
@@ -102,6 +133,36 @@ public class EditorActivity extends AppCompatActivity implements
         mQuantityEditText.setOnTouchListener(mTouchListener);
         mSupplierNameEditText.setOnTouchListener(mTouchListener);
         mSupplierPhoneEditText.setOnTouchListener(mTouchListener);
+        incrButton.setOnTouchListener(mTouchListener);
+        decrButton.setOnTouchListener(mTouchListener);
+
+        incrButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String quantity = mQuantityEditText.getText().toString().trim();
+                int totalQuantity = Integer.parseInt(quantity);
+                totalQuantity++;
+                ContentValues values = new ContentValues();
+                values.put(BookEntry.COLUMN_QUANTITY, totalQuantity);
+                getContentResolver().update(mCurrentBookUri, values, null, null);
+            }
+        });
+
+        decrButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String quantity = mQuantityEditText.getText().toString().trim();
+                int totalQuantity = Integer.parseInt(quantity);
+                totalQuantity--;
+                if (totalQuantity < 1) {
+                    totalQuantity = 0;
+                }
+                ContentValues values = new ContentValues();
+                values.put(BookEntry.COLUMN_QUANTITY, totalQuantity);
+                getContentResolver().update(mCurrentBookUri, values, null, null);
+            }
+        });
+
 
         setupSpinner();
     }
@@ -132,15 +193,15 @@ public class EditorActivity extends AppCompatActivity implements
                         mType = BookEntry.EBOOK; // ebook
                     }
                 }
-            }
+            }// Because AdapterView is an abstract class, onNothingSelected must be defined
 
-            // Because AdapterView is an abstract class, onNothingSelected must be defined
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 mType = 0; // Hardback
             }
         });
     }
+
 
     // Inflate menu (menu.menu_editor.xml) to create app bar overflow menu
     @Override
@@ -168,6 +229,31 @@ public class EditorActivity extends AppCompatActivity implements
             // if user selects save option
             case R.id.action_save:
                 // save user input to database
+
+                String titleString = mTitleEditText.getText().toString().trim();
+                String priceString = mPriceEditText.getText().toString().trim();
+                String quantityString = mQuantityEditText.getText().toString().trim();
+                String supplierNameString = mSupplierNameEditText.getText().toString().trim();
+                String supplierPhoneString = mSupplierPhoneEditText.getText().toString().trim();
+                //make sure that all fields are filled, if any fields
+                // are empty, then show toast and return without saving
+                if (TextUtils.isEmpty(titleString)) {
+                    Toast.makeText(this, "Title is a required field", Toast.LENGTH_LONG).show();
+                    return false;
+                } else if (TextUtils.isEmpty(priceString)) {
+                    Toast.makeText(this, "Price is a required field", Toast.LENGTH_LONG).show();
+                    return false;
+                } else if (TextUtils.isEmpty(quantityString)) {
+                    Toast.makeText(this, "Quantity is a required field", Toast.LENGTH_LONG).show();
+                    return false;
+                } else if (TextUtils.isEmpty(supplierNameString)) {
+                    Toast.makeText(this, "Supplier Name is a required field", Toast.LENGTH_LONG).show(
+                    );
+                    return false;
+                } else if (TextUtils.isEmpty(supplierPhoneString)) {
+                    Toast.makeText(this, "Supplier Phone is a required field", Toast.LENGTH_LONG).show();
+                    return false;
+                }
                 saveBook();
                 // exit editorActivity and return to mainActivity
                 finish();
@@ -175,7 +261,7 @@ public class EditorActivity extends AppCompatActivity implements
             // if user selects EXIT then finish and return to mainActivity w/out saving
             case R.id.action_exit:
                 finish();
-                return true;
+                break;
             // if user selects Delete Entry then
             case R.id.delete_entry:
                 // run dialog to confirm deletion
@@ -210,14 +296,20 @@ public class EditorActivity extends AppCompatActivity implements
     private void saveBook() {
         String titleString = mTitleEditText.getText().toString().trim();
         String priceString = mPriceEditText.getText().toString().trim();
+        double price = Double.parseDouble(priceString);
         String quantityString = mQuantityEditText.getText().toString().trim();
+        int quantity = Integer.parseInt(quantityString);
         String supplierNameString = mSupplierNameEditText.getText().toString().trim();
         String supplierPhoneString = mSupplierPhoneEditText.getText().toString().trim();
 
         // determine if this is a new book or an existing book
         // if there is no current uri then this is a new book
         if (mCurrentBookUri == null &&
-                TextUtils.isEmpty(titleString)) {
+                TextUtils.isEmpty(titleString) &&
+                TextUtils.isEmpty(priceString) &&
+                TextUtils.isEmpty(quantityString) &&
+                TextUtils.isEmpty(supplierNameString) &&
+                TextUtils.isEmpty(supplierPhoneString)) {
             return;
         }
 
@@ -267,7 +359,7 @@ public class EditorActivity extends AppCompatActivity implements
 
         // This loader will execute the ContentProvider's query method on a background thread
         return new CursorLoader(this,
-                BookEntry.CONTENT_URI,
+                mCurrentBookUri,
                 projection,
                 null,
                 null,
@@ -313,11 +405,13 @@ public class EditorActivity extends AppCompatActivity implements
                     mTypeSpinner.setSelection(2);
                     break;
             }
+
         }
         Log.i(TAG, "onFinishedLoading current uri" + mCurrentBookUri);
     }
 
     @Override
+    // reset the loader and set the editText fields to their default values
     public void onLoaderReset(Loader<Cursor> loader) {
         mTitleEditText.setText("");
         mTypeSpinner.setSelection(0);
@@ -375,6 +469,7 @@ public class EditorActivity extends AppCompatActivity implements
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
+
     public void deleteBook() {
         if (mCurrentBookUri != null) {
             int rowsDeleted = getContentResolver().delete(mCurrentBookUri, null, null);
@@ -406,8 +501,6 @@ public class EditorActivity extends AppCompatActivity implements
         // Show dialog that there are unsaved changes
         showUnsavedChangesDialog(discardButtonClickListener);
     }
-
-
 }
 
 

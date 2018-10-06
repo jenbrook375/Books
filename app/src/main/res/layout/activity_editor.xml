@@ -1,73 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/editText"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="18dp"
+    android:background="@drawable/editor_background"
     android:orientation="vertical"
-    tools:context=".EditorActivity"
-    android:layout_margin="18dp">
+    tools:context=".EditorActivity">
 
-    <!-- Name field -->
-    <EditText
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/title"
-        android:inputType="textCapWords"
-        />
-
-    <!-- Label -->
     <TextView
-        android:text="@string/type"
-        android:textSize="18sp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <!-- Book type drop-down spinner -->
-    <Spinner
-        android:id="@+id/spinner_type"
-        android:layout_height="48dp"
         android:layout_width="wrap_content"
-        android:paddingRight="16dp"
-        android:spinnerMode="dropdown"/>
-
-    <!-- Price field -->
-    <EditText
-        android:id="@+id/edit_price"
-        android:hint="@string/price"
-        android:inputType="numberDecimal"
-        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:text="@string/add_edit_books_here_n_all_fields_are_required"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
 
-    <!-- Quantity field -->
-    <EditText
-        android:id="@+id/edit_quantity"
-        android:hint="@string/quantity"
-        android:inputType="number"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        />
-
-    <!-- Quantity field -->
-    <EditText
-        android:id="@+id/edit_supplier_name"
-        android:hint="@string/supplier_name"
-        android:inputType="textCapWords"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
+        android:layout_height="match_parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
-    <!-- Quantity field -->
-    <EditText
-        android:id="@+id/edit_supplier_phone"
-        android:hint="@string/supplier_phone_number"
-        android:inputType="phone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
 
+        <!-- Name field -->
+        <EditText
+            android:id="@+id/edit_title"
+            style="@style/editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/title"
+            android:inputType="textCapWords"
+            android:paddingTop="8dp" />
+
+        <!-- Label -->
+        <TextView
+            style="@style/editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:text="@string/type" />
+
+        <!-- Book type drop-down spinner -->
+        <Spinner
+            android:id="@+id/spinner_type"
+            android:layout_width="wrap_content"
+            android:layout_height="56dp"
+            android:paddingRight="16dp"
+            android:spinnerMode="dropdown" />
+
+        <!-- Price field -->
+        <EditText
+            android:id="@+id/edit_price"
+            style="@style/editText"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/price"
+            android:inputType="numberDecimal" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/increment_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="@string/increment" />
+
+            <EditText
+                android:id="@+id/quantity_text_view"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/quantity"
+                android:inputType="number"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:textAlignment="center"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/decrement_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="@string/decrement" />
+
+        </LinearLayout>
+
+
+        <!-- Supplier Name field -->
+        <EditText
+            android:id="@+id/edit_supplier_name"
+            style="@style/editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/supplier_name"
+            android:inputType="textCapWords" />
+
+        <!-- Supplier Phone field -->
+        <EditText
+            android:id="@+id/edit_supplier_phone"
+            style="@style/editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/supplier_phone_number"
+            android:inputType="phone" />
+
+        <Button
+            android:id="@+id/order_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorAccent"
+            android:text="@string/order"
+            android:textColor="#ffffff" />
+    </LinearLayout>
 </LinearLayout>
 
